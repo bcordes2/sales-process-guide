@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        :root {
+            --red: #e31b23;
+            --black: #1a1a1a;
+            --white: #ffffff;
+            --gray: #f4f4f4;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background: var(--black);
+            color: var(--black);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            background: var(--black);
+            padding: 4rem 2rem;
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            border: 3px solid var(--red);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--red);
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--white);
+            font-weight: 800;
+        }
+
+        .header p {
+            font-size: 1.5rem;
+            color: var(--gray);
+            font-weight: 300;
+        }
+
+        .question-container {
+            display: inline-block;
+            text-align: center;
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            max-width: fit-content;
+            white-space: nowrap; /* Ensures text stays in a single line unless it overflows */
+
+            /* Centering */
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+
+        .question {
+            font-size: 2rem;
+            color: var(--black);
+            font-weight: 600;
+        }
+
+        /* Add to your existing CSS */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .choice-button {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border: 2px solid var(--black);
+            border-radius: 10px;
+            background: var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .choice-button:hover {
+            background: var(--black);
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 1200px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .question {
+                font-size: 1.5rem;
+            }
+        }
+
+        .standard-track .track-header {
+            background: var(--black);
+        }
+
+        .track {
+            background: var(--white);
+            padding: 0;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            border: 2px solid var(--black);
+        }
+
+        .track-header {
+            text-align: center;
+            padding: 2rem;
+            color: var(--white);
+            font-size: 2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        .track-content {
+            padding: 2rem;
+        }
+
+        .step {
+            margin-bottom: 2.5rem;
+            padding: 2rem;
+            background: var(--gray);
+            border-radius: 16px;
+            border: 2px solid;
+            position: relative;
+        }
+
+        .step-number {
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            color: var(--white);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: 800;
+            font-size: 1.25rem;
+        }
+
+        .step-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin: 0.5rem 0 1.5rem;
+            color: var(--black);
+            padding-left: 2rem;
+        }
+
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist li {
+            margin-bottom: 1rem;
+            padding: 1rem 1.5rem;
+            background: var(--white);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .standard-track .checklist li:hover {
+            border-color: var(--black);
+            transform: translateX(10px);
+        }
+
+        .rto-track .checklist li:hover {
+            border-color: var(--red);
+            transform: translateX(10px);
+        }
+
+        .checklist li::before {
+            content: "→";
+            margin-right: 1rem;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .standard-track .checklist li::before {
+            color: var(--black);
+        }
+
+        .rto-track .checklist li::before {
+            color: var(--red);
+        }
+
+        #process-content {
+            margin-top: 2rem;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .accordion-content {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--white);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .accordion-item {
+            cursor: pointer;
+            padding: 1rem;
+        }
+
+        .accordion-item.active {
+            background: var(--gray);
+        }
+
+        .content-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .instructions {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .image-container {
+            flex: 2;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .rto-track .track-header {
+            background: var(--red);
+        }
+
+        .rto-track .checklist li:hover {
+            border-color: var(--red);
+            transform: translateX(10px);
+        }
+
+        .rto-track .checklist li::before {
+            color: var(--red);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Sales Process with The Carport Experts</h1>
+            <p>The Complete Guide</p>
+        </div>
+        
+        <div class="question-container">
+            <h2 class="question">Is the customer Paying Upon Installation or through RTO?</h2>
+            <div class="button-container">
+                <button class="choice-button" onclick="hideAllContent(); showInstallation()">Pay Upon Installation</button>
+                <button class="choice-button" onclick="hideAllContent(); showRTO()">RTO</button>
+             </div>
+        </div>
+    </div>
+    <script>
+
+// Add at beginning of script
+    const appState = {
+        currentPath: null, // 'installation' or 'rto'  
+        rtoChoices: {
+            stateEligible: null,      // yes/no
+            wantsQuote: null,         // yes/no
+            estimatorProceed: null,   // yes/no
+            completedIdearoom: null,  // yes/no
+            completedEzPay: null,     // yes/no
+            completedHubspot: null,   // yes/no
+        }
+    };
+
+    function updateState(key, value) {
+        if (key.includes('.')) {
+            const [object, property] = key.split('.');
+            appState[object][property] = value;
+        } else {
+            appState[key] = value;
+        }
+        clearSubsequentContent(key);
+    }
+
+    function clearSubsequentContent(changedKey) {
+        const contentOrder = {
+            'currentPath': ['rto-question', 'rto-response', 'payment-estimator-content', 'rto-idearoom-content', 'ezpay-content', 'rto-hubspot-content', 'rto-final-steps-content'],
+            'rtoChoices.stateEligible': ['rto-response', 'payment-estimator-content', 'rto-idearoom-content', 'ezpay-content', 'rto-hubspot-content', 'rto-final-steps-content'],
+            'rtoChoices.wantsQuote': ['payment-estimator-content', 'rto-idearoom-content', 'ezpay-content', 'rto-hubspot-content', 'rto-final-steps-content'],
+            'rtoChoices.estimatorProceed': ['rto-idearoom-content', 'ezpay-content', 'rto-hubspot-content', 'rto-final-steps-content']
+        };
+
+        const elementsToRemove = contentOrder[changedKey] || [];
+        elementsToRemove.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) element.remove();
+        });
+    }
+
+// Start
+
+    function showInstallation() {
+        // Clear ALL RTO content first
+        updateState('currentPath', 'installation');
+        const rtoElements = [
+            'rto-question', 
+            'rto-response', 
+            'payment-estimator-content', 
+            'rto-idearoom-content',
+            'ezpay-content',
+            'rto-hubspot-content',
+            'rto-final-steps-content'
+        ];
+        rtoElements.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) element.remove();
+        });
+
+        // Rest of showInstallation remains same
+        const processDiv = document.createElement('div');
+        processDiv.id = 'installation-content';
+        processDiv.innerHTML = `
+            <div class="track standard-track">
+                <div class="track-header">Idearoom</div>
+                    <div class="track-content">
+                        <div class="step">
+                            <div class="step-title">Idearoom</div>
+                            <ul class="checklist">
+                                <li class="accordion-item">Zipcode & Login</li>
+                                <li class="accordion-item">Sales Tool & Order</li>
+                                <li class="accordion-item">Contract & Submittal</li>
+                                <li class="accordion-item">Saving the file</li>
+                            </ul>
+                        </div>
+                    </div>    
+                </div>
+        </div>
+        <div class="question-container" style="margin-top: 20px;">
+            <h2 class="question">Have you saved down the contract with the correct details in Idearoom?</h2>
+            <div class="button-container">
+                <button class="choice-button" onclick="showHubspot()">Yes</button>
+                <button class="choice-button">If not yes, complete above steps</button>
+            </div>
+        </div>
+        `;
+        document.querySelector('.container').appendChild(processDiv);
+        addAccordionListeners();
+    }
+
+    function addAccordionListeners() {
+        const accordionItems = document.querySelectorAll('.accordion-item');
+        accordionItems.forEach(item => {
+            // Remove any existing listeners first
+            item.removeEventListener('click', toggleAccordion);
+            // Add new listener
+            item.addEventListener('click', toggleAccordion);
+        });
+    }
+
+    function toggleAccordion(e) {
+        const item = e.currentTarget;
+        let content = item.querySelector('.accordion-content');
+        
+        // Close all other accordions
+        const allItems = document.querySelectorAll('.accordion-item');
+        allItems.forEach(otherItem => {
+            if (otherItem !== item) {
+                const otherContent = otherItem.querySelector('.accordion-content');
+                if (otherContent) {
+                    otherContent.style.display = 'none';
+                    otherItem.classList.remove('active');
+                }
+            }
+        });
+
+        if (!content) {
+            // Create content based on item text
+            content = createAccordionContent(item.textContent.trim());
+            item.appendChild(content);
+        }
+
+        content.style.display = content.style.display === 'none' || !content.style.display ? 'block' : 'none';
+        item.classList.toggle('active');
+    }
+
+    function createAccordionContent(itemText) {
+        const content = document.createElement('div');
+        content.className = 'accordion-content';
+
+        switch(itemText) {
+            case 'Zipcode & Login':
+                content.innerHTML = `
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>1. Go to <a href="https://designer.thecarportexpertsinc.com/?dealer=Metal-America" target="_blank">Idearoom</a></p>
+                            <p>2. Enter the customer's zipcode or state</p>
+                            <p>3. Sign in to Idearoom (you may need to click / sign in twice - it is a little buggy)</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Design-Contract/TCE/Idearoom/TCE1.png" alt="Zipcode & Login">
+                        </div>
+                    </div>
+                `;
+                break;
+            case 'Sales Tool & Order':
+                content.innerHTML = `
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>1. Ensure the deposit percentage is correct by visiting <a href="https://www.metalbuildingsnorthamerica.com/sales-tool" target="_blank">Sales Tool</a> and looking up the appropriate manufacturer under the arrow in the top-right of the tool</p>
+                            <p>2. If you gave a discount, enter it here</p>
+                            <p>3. Calculate the sales tax <a href="https://www.metalbuildingsnorthamerica.com/calculator-sales-tax" target="_blank">here</a> and then return to idearoom, click percentage, and enter the percentage</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Design-Contract/TCE/Idearoom/TCE2.png" alt="Sales Tool">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>4. Scroll down and click "Checkout"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Design-Contract/TCE/Idearoom/TCE3.png" alt="Order">
+                        </div>
+                    </div>
+                `;
+                break;
+            case 'Contract & Submittal':
+                content.innerHTML = `
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>1. Choose "Cash or Check" (if you are on the RTO path, choose "Installment (Financing)")</p>
+                            <p>2. Enter your Metal America email and phone number</p>
+                            <p>3. Enter the customer's address</p>
+                            <p>4. Click "Next"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Design-Contract/TCE/Idearoom/TCE4.png" alt="Contract 1">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>5. Check "My billing address and shipping address are the same."</p>
+                            <p>6. Enter the customer's name</p>
+                            <p>7. Enter the customer's contact details (i.e., phone number and email)</p>
+                            <p>8. Click "Email Contract"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Design-Contract/TCE/Idearoom/TCE5.png" alt="Contract 2">
+                        </div>
+                    </div>
+                `;
+                break;
+            case 'Saving the file':
+                content.innerHTML = `
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>1. Click "Print Order""</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Design-Contract/TCE/Idearoom/TCE6.png" alt="Save 1">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>2. Click "Save"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Design-Contract/TCE/Idearoom/TCE7.png" alt="Save 2">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>3. Save the file locally on your computer and title it [Customer Name] - [Building Type] - Purchase Agreement</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Design-Contract/TCE/Idearoom/TCE8.png" alt="Save 2">
+                        </div>
+                    </div>
+                `;
+                break;
+// Start Hubspot
+            case 'Sign In':
+                content.innerHTML = `
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>1. Sign in <a href="https://app.hubspot.com/login" target="_blank">here </a>using your Metal America Credentials</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot1.png" alt="Sign In">
+                        </div>
+                    </div>
+                `;
+                break;
+
+            case 'Finding the Contact':
+                content.innerHTML = `
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>1. Click on "Contacts"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot2.png" alt="Contacts">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>2. Navigate to "My Contacts"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot3.png" alt="My Contacts">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>3. Search for the customer in the bar</p>
+                            <p>4. Click on the customer's contact</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot4.png" alt="Search Contact">
+                        </div>
+                    </div>
+                `;
+                break;
+
+            case 'Contact Details':
+                content.innerHTML = `
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>1. Select the lead classification (likely A+ if you are here)</p>
+                            <p>2. Enter the customer's address</p>
+                            <p>3. Enter the building specifications (type and dimensions)</p>
+                            <p>4. Select the manufacturer</p>
+                            <p>5. Select the source (where did the lead come from, likely already filled in)</p>
+                            <p>6. Click "Save"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot5.png" alt="Contact Details">
+                        </div>
+                    </div>
+                `;
+                break;
+
+            case 'Deal Creation and Details':
+                content.innerHTML = `
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>1. Click "Add" under Deals</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot6.png" alt="Add Deal">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>2. Create the deal name (i.e., "[Customer Name] - [Type] - [Dimensions]")</p>
+                            <p>3. Enter the amount (i.e., the deposit required to order on the purchase agreement / Metal America's revenue)</p>
+                            <p>4. Click "Create"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot6.1.png" alt="Deal Details">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>5. Enter the purchase price (i.e., the subtotal on the contract / the total price before tax)</p>
+                            <p>6. Enter the dealer discount (0 if you did not give one)</p>
+                            <p>7. Select the payment type (For pay upon install, choose Cash, and for RTO, choose the respective RTO copmany)</p>
+                            <p>8. Select the deposit method (99.9999% of the time Hubspot)</p>
+                            <p>9. Select "yes" for the 3% convenience fee (unless you are not going to apply it)</p>
+                            <p>10. Select the Source (enter the same source as you did for the contact)</p>
+                            <p>11. Click "Save"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot7.png" alt="Deal Creation">
+                        </div>
+                    </div>
+                `;
+                break;
+
+            case 'Docusign Integration':
+                content.innerHTML = `
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>1. Click "Create New" in the Docusign integration</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot8.png" alt="Docusign New">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>2. Click "Create Envelope" at the bottom</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot8.1.png" alt="Create Envelope">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>3. Click "Add Document"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot9.png" alt="Add Document">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>4. Locate your file locally (this will look different for everyone) and upload it</p>
+                            <p>5. Click "Save & Next" in the top right corner</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot9.2.png" alt="Upload Document">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>6. Search for the customer under the name tab</p>
+                            <p>7. Click "Add New Recipient"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot10.png" alt="Add Recipient">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>8. Fill in your name and email</p>
+                            <p>9. Click "Save & Next" in the top right hand corner</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot10.1.png" alt="Recipient Details">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>10. Enter the email subject line (example: 20x20x7 Carport Purchase Agreement)</p>
+                            <p>11. Enter the body if you'd like</p>
+                            <p>12. Click "Save & Next"
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot11.png" alt="Email Details">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>Proceed to Step 16 if you are familiar with Docusign, steps 13-15 are how to fill out contracts on Docusign</p>
+                            <p>13. Clicking on users in the top right allows you to switch between signatures</p>
+                            <p>14. The items below (e.g., signature, initial, date signed, etc.) are all drag and drop</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot12.1.png" alt="Signature Options">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>15. EXAMPLE: The following is an example of what it looks like, below you will find where to drag and drop for the specific contract</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot12.2.png" alt="Example">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>16. (Page 2) Customer Signature and Date</p>
+                            <p>2. Your Signature and Date</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Design-Contract/TCE/Contract/TCE-Contract1.png" alt="Contract Signatures">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>3. (Page 3) Customer Signature and Date</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Design-Contract/TCE/Contract/TCE-Contract2.png" alt="Contract Signatures">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>17. After all the signatures are placed, click "Send"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot12.3.png" alt="Send Contract">
+                        </div>
+                    </div>
+                `;
+                break;
+
+            case 'Payment Link':
+                content.innerHTML = `
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>1. Click add next to payment links</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot13.png" alt="Add Payment Link">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>2. Click create custom line item</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot14.png" alt="Create Line Item">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>3. Enter the customer name</p>
+                            <p>4. Enter the description (e.g., 20x20x7 Carport Deposit)</p>
+                            <p>5. Enter unit price (i.e., the deposit required to order on the contract / Metal America revenue)</p>
+                            <p>6. Click save</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot14.1.png" alt="Line Item Details">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>7. Click "Add discount, fee, or tax"</p>
+                            <p>8. Click "Add one-time fee"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot14.2.png" alt="Add Fee">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>9. Enter "3% Convenience Fee"</p>
+                            <p>10. Change to "%"</p>
+                            <p>11. Enter "3"</p>
+                            <p>12. Click "Create"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot14.3.png" alt="Fee Details">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>13. Click "copy" and paste the link in a new window</p>
+                            <p>14. Optional: You can also email the link by clicking "Write email with payment link" but the instructions here will proceed as if you are collecting the information over the phone</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot15.png" alt="Copy Link">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>15. Collect customer information (e.g., email and card or bank number - however the customer wants to pay)</p>
+                            <p>16. Click "Pay"</p>
+                            <p>17. You're done!</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Hubspot/Hubspot15.1.png" alt="Payment">
+                        </div>
+                    </div>
+                `;
+                break;
+// End Hubspot    
+
+// Start Closing
+
+            case 'Contract':
+                content.innerHTML = `
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>1. Navigate to your <a href="https://drive.google.com/drive/home" target="_blank">Metal America Email</a> and find the contract sent from Docusign, and click "Review Document"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Closing/Closing-Contract1.png" alt="Review Document">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>2. Sign where you need to</p>
+                            <p>3. Click finish</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Closing/Closing-Contract2.png" alt="Sign Document">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>4. Docusign will send you a completed contract: Navigate back to your <a href="https://drive.google.com/drive/home" target="_blank">Metal America Email</a>, locate it, and click "View Completed Document"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Closing/Closing-Contract3.png" alt="View Completed">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>5. Click the download button and select combined PDF</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Closing/Closing-Contract4.png" alt="Download PDF">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>6. In the top right it will download, when finished click on it</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Closing/Closing-Contract5.png" alt="Click Download">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>7. Click the download button</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Closing/Closing-Contract6.png" alt="Download">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>8. Name the file (e.g., Schmo - Carport - Signed Purchase Agreement) and save it to your computer</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Closing/Closing-Contract7.png" alt="Save File">
+                        </div>
+                    </div>
+                `;
+                break;
+
+            case 'Order Tool':
+                content.innerHTML = `
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>1. Go to <a href="https://www.metalbuildingsnorthamerica.com/orders-page" target="_blank">here</a></p>
+                            <p>2. Fill in your info</p>
+                            <p>3. Fill in the customer info</p>
+                            <p>4. Select the manufacturer</p>
+                            <p>5. Upload the purchase agreement</p>
+                            <p>6. If necessary upload other documents (e.g., RTO documents, tax exempt forms, etc.) in the appropriate spots</p>
+                            <p>7. Click submit at the bottom</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Closing/OrderTool1.png" alt="Order Tool Form">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>8. Sign into your Metal America email</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Closing/OrderTool2.png" alt="Sign In">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>9. Review</p>
+                            <p>10. If it looks good, hit submit and you're done!</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Closing/OrderTool3.png" alt="Review and Submit">
+                        </div>
+                    </div>
+                `;
+                break;
+
+            case 'Final Steps':
+                content.innerHTML = `
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>1. Go to the deal in Hubspot and mark it as "Closed Won"</p>
+                            <p>2. Click "Save"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Closing/Final1.png" alt="Mark as Closed">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>2. Put your sale in the Building Sold Slack Channel</p>
+                            <p>You're done!</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../Closing/Final2.png" alt="Slack Channel">
+                        </div>
+                    </div>
+                `;
+                break;
+
+// End Closing 
+
+// Start Payment estimator
+
+            case 'Login':
+                content.innerHTML = `
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>1. Go to <a href="https://ezpaybuildings.net/SignIn.aspx" target="_blank">EZ Pay</a></p>
+                            <p>2. Sign In</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../EZ-Pay/Payment-Estimator/EZPay-PE1.png" alt="EZ Pay Sign In">
+                        </div>
+                    </div>
+                `;
+                break;
+
+            case 'Payment Estimator':
+                content.innerHTML = `
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>1. Click on Payment Estimator</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../EZ-Pay/Payment-Estimator/EZPay-PE2.png" alt="Navigate to Payment Estimator">
+                        </div>
+                    </div>
+                `;
+                break;
+
+            case 'Tool Usage':
+                content.innerHTML = `
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>1. Choose the manufacturer</p>
+                            <p>2. Type in the customer zipcode</p>
+                            <p>3. Type in the product price (i.e., the subtotal or price before tax)</p>
+                            <p>4. Go to the <a href="https://www.metalbuildingsnorthamerica.com/sales-tool" target="_blank">Sales Tool</a> and find Metal America's commission rate and enter the percentage in initial payments</p>
+                            <p>You're done!</>
+                        </div>
+                        <div class="image-container">
+                            <img src="../EZ-Pay/Payment-Estimator/EZPay-PE3.png" alt="Tool Usage">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>Here are the customer options!</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../EZ-Pay/Payment-Estimator/EZPay-PE3.1.png" alt="Customer Options">
+                        </div>
+                    </div>
+                `;
+                break;
+
+// End payment estimator
+
+// Start of EZ Pay
+
+            case 'Create the Contract':
+                content.innerHTML = `
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>1. Click on "Create Contract"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../EZ-Pay/Contract/EZPay2.png" alt="Create Contract">
+                        </div>
+                    </div>
+                `;
+                break;
+
+            case 'Fill out the Contract':
+                content.innerHTML = `
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>PLEASE READ: Any field that is not in these instructions can be left blank / unchanged</p>
+                            <p>1. Choose the Manufacturer from the dropdown</p>
+                            <p>2. Enter the customer name</p>
+                            <p>3. Indicate whether the customer owns the property (99.9999% of the time they do)</p>
+                            <p>4. Enter the customer's address</p>
+                            <p>5. Indicate whether or not the customer is tax exempt</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../EZ-Pay/Contract/EZPay3.png" alt="Contract Details 1">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>6. Enter the product price (i.e., the subtotal on the contract or the price before tax)</p>
+                            <p>7. Go to the Sales Tool and find Metal America's commission rate and entire the percentage in initial payments</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../EZ-Pay/Contract/EZPay3.1.png" alt="Contract Details 2">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>8. Insert the product length, width, and height (on the contract it goes WxLxH, so for a 20x25x7, you would enter 25, 20, and 7)</p>
+                            <p>9. Gather the last 4 of the customer's social security number</p>
+                            <p>10. Type in the customer's birthday</p>
+                            <p>11. Type in the customer drivers license number, indicate the state its issued in, and its expiration date</p>
+                            <p>12. Choose "No" for is "Applicant in Active Bankruptcy"</p>
+                            <p>13. Enter the customer's phone number (you can use the same one both times)</p>
+                            <p>14. Enter the customer's email</p>
+                            <p>15. Check the box next to "Same as delivery address"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../EZ-Pay/Contract/EZPay3.2.png" alt="Contract Details 3">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>16. Type in the customer employer (if the customer is retired you can just type "Retired")</p>
+                            <p>17. Type in the customer's phone number for employer phone number</p>
+                            <p>18. Change the employment length to 1 on the year (you do not need to ask the customer)</p>
+                            <p>19. Fill in the customer's monthly take home pay (you will need to ask)</p>
+                            <p>20. Fill in 0 for "Monthly Property Payment"</p>
+                            <p>21. Fill in the name on the dead of the property</p>
+                            <p>22. Choose "Cash" under "Today's payment method for deposit"</p>
+                            <p>23. Choose "Electronically sign and file this contract." under "How to sign and file contract"</p>
+                            <p>24. Click "Check form and complete" - this will email the customer the RTO contract to sign</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../EZ-Pay/Contract/EZPay3.3.png" alt="Contract Details 4">
+                        </div>
+                    </div>
+                `;
+                break;
+
+            case 'Collecting EZ Pay\'s Payment':
+                content.innerHTML = `
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>1. Remember or write down the number here next to "Total Monthly Payment"</p>
+                            <p>2. Click "Actions"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../EZ-Pay/Contract/EZPay4.png" alt="Payment Step 1">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>3. Click "Credit Card Payment"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../EZ-Pay/Contract/EZPay5.png" alt="Payment Step 2">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>4. Enter the number that was the "Total Monthly Payment" from step 1</p>
+                            <p>5. Collect the customer's credit card information</p>
+                            <p>6. Check "Customer agrees to Terms of Payment"</p>
+                            <p>7. Click "Submit"</p>
+                            <p>8. You're done!</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../EZ-Pay/Contract/EZPay6.png" alt="Payment Step 3">
+                        </div>
+                    </div>
+                `;
+                break;
+//End of EZ Pay
+
+//EZ Pay Closing Steps
+
+
+            case 'EZ Pay Closing Steps':
+                content.innerHTML = `
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>1. Navigate back to the <a href="https://ezpaybuildings.net/SignIn.aspx" target="_blank">EZ Pay Contract</a></p>
+                            <p>2. Click "Pending Contracts"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../EZ-Pay/Closing-Steps/EZPay-Closing1.png" alt="Navigate to Pending">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>3. Click on the appropriate customer's contract</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../EZ-Pay/Closing-Steps/EZPay-Closing1.1.png" alt="Select Contract">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>4. Click on "Documents"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../EZ-Pay/Closing-Steps/EZPay-Closing1.2.png" alt="Click Documents">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>5. Click on "Signed Contract" (if it is not there, the customer has not signed it yet)</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../EZ-Pay/Closing-Steps/EZPay-Closing2.png" alt="Click Signed Contract">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>6. Click the download button</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../EZ-Pay/Closing-Steps/EZPay-Closing3.png" alt="Download Contract">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>7. Save down the contract to your computer (e.g., Schmo EZ Pay Agreement)</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../EZ-Pay/Closing-Steps/EZPay-Closing3.1.png" alt="Save Contract">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>8. Return to the documents tab in the EZ Pay contract and Click "Add File"</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../EZ-Pay/Closing-Steps/EZPay-Closing4.png" alt="Add File">
+                        </div>
+                    </div>
+                    <div class="content-row">
+                        <div class="instructions">
+                            <p>9. Select "Carport Order Form"</p>
+                            <p>10. Attach the signed purchase (i.e., the contract downloaded from Docusign)</p>
+                            <p>11. Click "Upload"</p>
+                            <p>12. You're done!</p>
+                        </div>
+                        <div class="image-container">
+                            <img src="../EZ-Pay/Closing-Steps/EZPay-Closing5.png" alt="Upload File">
+                        </div>
+                    </div>
+                `;
+                break;
+
+//End of EZ Pay Closing Steps
+        }
+        return content;
+    }
+
+    function showHubspot() {
+        // Remove any existing Hubspot content first (if user clicks multiple times)
+        const existingHubspot = document.getElementById('hubspot-content');
+        const existingFinal = document.getElementById('final-steps-content');
+        
+        if (existingHubspot) existingHubspot.remove();
+        if (existingFinal) existingFinal.remove();
+        
+        const processDiv = document.createElement('div');
+        processDiv.id = 'hubspot-content';
+        processDiv.innerHTML = `
+            <div class="track standard-track">
+                <div class="track-header">Hubspot</div>
+                    <div class="track-content">
+                        <div class="step">
+                            <div class="step-title">Hubspot</div>
+                            <ul class="checklist">
+                                <li class="accordion-item">Sign In</li>
+                                <li class="accordion-item">Finding the Contact</li>
+                                <li class="accordion-item">Contact Details</li>
+                                <li class="accordion-item">Deal Creation and Details</li>
+                                <li class="accordion-item">Docusign Integration</li>
+                                <li class="accordion-item">Payment Link</li>
+                            </ul>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+            <div class="question-container" style="margin-top: 20px;">
+                <h2 class="question">Have you sent the contract and has the customer paid the deposit?</h2>
+                <div class="button-container">
+                    <button class="choice-button" onclick="showFinalSteps()">Yes</button>
+                    <button class="choice-button">If not yes, complete above steps</button>
+                </div>
+            </div>
+        `;
+        // Append after the existing content
+        const installationContent = document.getElementById('installation-content');
+        installationContent.appendChild(processDiv);
+        addAccordionListeners();
+    }
+    function showFinalSteps() {
+        // Remove any existing Final Steps content first
+        const existingFinal = document.getElementById('final-steps-content');
+        if (existingFinal) existingFinal.remove();
+        
+        const processDiv = document.createElement('div');
+        processDiv.id = 'final-steps-content';
+        processDiv.innerHTML = `
+            <div class="track standard-track">
+                <div class="track-header">Final Steps</div>
+                    <div class="track-content">
+                        <div class="step">
+                            <div class="step-title">Final Steps</div>
+                            <ul class="checklist">
+                                <li class="accordion-item">Contract</li>
+                                <li class="accordion-item">Order Tool</li>
+                                <li class="accordion-item">Final Steps</li>
+                            </ul>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+            <div class="question-container" style="margin-top: 20px;">
+                <h2 class="question">Congrats! You did it, deal complete.</h2>
+            </div>
+        `;
+        // Append after the Hubspot content
+        const hubspotContent = document.getElementById('hubspot-content');
+        hubspotContent.appendChild(processDiv);
+        addAccordionListeners();
+    }
+
+    function showPaymentEstimator() {
+        const processDiv = document.createElement('div');
+        processDiv.id = 'payment-estimator-content';
+        processDiv.innerHTML = `
+            <div class="track rto-track">
+                <div class="track-header" style="background: var(--red);">Payment Estimator</div>
+                    <div class="track-content">
+                        <div class="step">
+                            <div class="step-title">Payment Estimator Steps</div>
+                            <ul class="checklist">
+                                <li class="accordion-item">Login</li>
+                                <li class="accordion-item">Payment Estimator</li>
+                                <li class="accordion-item">Tool Usage</li>
+                            </ul>
+                        </div>
+                    </div>    
+                </div>
+                <div class="question-container" style="margin-top: 20px;">
+                    <h2 class="question">Does the customer wish to proceed?</h2>
+                    <div class="button-container">
+                        <button class="choice-button" onclick="handleEstimatorAnswer('yes')">Yes</button>
+                        <button class="choice-button" onclick="handleEstimatorAnswer('no')">No</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        const rtoResponse = document.getElementById('rto-response');
+        rtoResponse.appendChild(processDiv);
+        addAccordionListeners();
+    }
+
+
+    function showRTO() {
+        updateState('currentPath', 'rto');
+        const installationElements = ['installation-content', 'hubspot-content', 'final-steps-content'];
+        installationElements.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) element.remove();
+        });
+
+        const rtoQuestion = document.createElement('div');
+        rtoQuestion.id = 'rto-question';
+        rtoQuestion.innerHTML = `
+            <div class="question-container">
+                <h2 class="question">Does the customer reside in one of these states?</h2>
+                <div style="margin: 20px 0; line-height: 1.8; text-align: left;">
+                    <p><strong>Southeast:</strong> Alabama, Florida, Georgia, Kentucky, Mississippi, North Carolina, South Carolina, Tennessee</p>
+                    <p><strong>Midwest:</strong> Illinois, Indiana, Iowa, Kansas, Michigan, Missouri, Ohio</p>
+                    <p><strong>Northeast:</strong> Delaware, Maine, Maryland, Pennsylvania, West Virginia</p>
+                    <p><strong>South:</strong> Arkansas, Louisiana, Oklahoma, Texas, Virginia</p>
+                </div>
+                <div class="button-container">
+                    <button class="choice-button" onclick="handleRTOAnswer('no')">Yes</button>
+                    <button class="choice-button" onclick="handleRTOAnswer('no')">No</button>
+                </div>
+            </div>
+        `;
+        document.querySelector('.container').appendChild(rtoQuestion);
+    }
+
+    function handleRTOAnswer(answer) {
+        updateState('rtoChoices.stateEligible', answer);
+
+        const responseDiv = document.createElement('div');
+        responseDiv.id = 'rto-response';
+        
+        if (answer === 'no') {
+            responseDiv.innerHTML = `
+                <div class="question-container" style="margin-top: 20px;">
+                    <h2 class="question">Please contact your sales manager</h2>
+                </div>
+            `;
+        } else {
+            responseDiv.innerHTML = `
+                <div class="question-container" style="margin-top: 20px;">
+                    <h2 class="question">Does the customer want a quote on the monthly RTO price?</h2>
+                    <div class="button-container">
+                        <button class="choice-button" onclick="handleQuoteAnswer('yes')">Yes</button>
+                        <button class="choice-button" onclick="handleQuoteAnswer('no')">No</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        const rtoQuestion = document.getElementById('rto-question');
+        rtoQuestion.appendChild(responseDiv);
+    }
+
+    function handleQuoteAnswer(answer) {
+        updateState('rtoChoices.wantsQuote', answer);
+
+        if (answer === 'yes') {
+            showPaymentEstimator();
+        } else {
+            showRTOIdearoom();
+        }
+        }
+
+
+    function showRTOIdearoom() {
+        // First, remove any existing idearoom content
+        const existingIdearoom = document.getElementById('rto-idearoom-content');
+        if (existingIdearoom) existingIdearoom.remove();
+
+        const processDiv = document.createElement('div');
+        processDiv.id = 'rto-idearoom-content';
+        processDiv.innerHTML = `
+            <div class="track rto-track">
+                <div class="track-header" style="background: var(--red);">Idearoom</div>
+                    <div class="track-content">
+                        <div class="step">
+                            <div class="step-title">Idearoom</div>
+                            <ul class="checklist">
+                                <li class="accordion-item">Zipcode & Login</li>
+                                <li class="accordion-item">Sales Tool & Order</li>
+                                <li class="accordion-item">Contract & Submittal</li>
+                                <li class="accordion-item">Saving the file</li>
+                            </ul>
+                        </div>
+                    </div>    
+                </div>
+                    <div class="question-container" style="margin-top: 20px;">
+                        <h2 class="question">Have you saved down the contract with the correct details in Idearoom?</h2>
+                        <div class="button-container">
+                            <button class="choice-button" onclick="showEZPay()">Yes</button>
+                            <button class="choice-button">If not yes, complete above steps</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Find the appropriate container and append
+        const container = document.querySelector('.container');
+        container.appendChild(processDiv);
+        
+        // Remove any existing listeners before adding new ones
+        const existingAccordionItems = document.querySelectorAll('.accordion-item');
+        existingAccordionItems.forEach(item => {
+            item.removeEventListener('click', toggleAccordion);
+        });
+        
+        addAccordionListeners();
+    }
+
+
+    function handleEstimatorAnswer(answer) {
+        updateState('rtoChoices.estimatorProceed', answer);
+
+        const existingIdearoom = document.getElementById('rto-idearoom-content');
+        if (existingIdearoom) existingIdearoom.remove();
+
+        if (answer === 'yes') {
+            showRTOIdearoom();
+        } else {
+            // Create a dedicated div for the response
+            const welpResponse = document.createElement('div');
+            welpResponse.id = 'welp-response';
+            welpResponse.innerHTML = `
+                <div class="question-container" style="margin-top: 20px;">
+                    <h2 class="question">Welp :/</h2>
+                </div>
+            `;
+            document.getElementById('payment-estimator-content').appendChild(welpResponse);
+        }
+    }
+
+    function showEZPay() {
+        updateState('rtoChoices.completedIdearoom', true);
+        const processDiv = document.createElement('div');
+        processDiv.id = 'ezpay-content';
+        processDiv.innerHTML = `
+            <div class="track rto-track">
+                <div class="track-header" style="background: var(--red);">EZ Pay</div>
+                    <div class="track-content">
+                        <div class="step">
+                            <div class="step-title">EZ Pay Steps</div>
+                            <ul class="checklist">
+                                <li class="accordion-item">Login</li>
+                                <li class="accordion-item">Create the Contract</li>
+                                <li class="accordion-item">Fill out the Contract</li>
+                                <li class="accordion-item">Collecting EZ Pay's Payment</li>
+                            </ul>
+                        </div>
+                    </div>    
+                </div>
+                <div class="question-container" style="margin-top: 20px;">
+                    <h2 class="question">Have you sent the customer the RTO contract and collected the first month's payment?</h2>
+                    <div class="button-container">
+                        <button class="choice-button" onclick="showRTOHubspot()">Yes</button>
+                        <button class="choice-button">If not yes, complete above steps</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Find the appropriate container and append
+        const container = document.querySelector('.container');
+        container.appendChild(processDiv);
+        
+        addAccordionListeners();
+    }
+
+    function showRTOHubspot() {
+        updateState('rtoChoices.completedEzPay', true);
+        // Remove any existing Hubspot content first
+        const existingHubspot = document.getElementById('rto-hubspot-content');
+        if (existingHubspot) existingHubspot.remove();
+        
+        const processDiv = document.createElement('div');
+        processDiv.id = 'rto-hubspot-content';
+        processDiv.innerHTML = `
+            <div class="track rto-track">
+                <div class="track-header" style="background: var(--red);">Hubspot</div>
+                    <div class="track-content">
+                        <div class="step">
+                            <div class="step-title">Hubspot</div>
+                            <ul class="checklist">
+                                <li class="accordion-item">Sign In</li>
+                                <li class="accordion-item">Finding the Contact</li>
+                                <li class="accordion-item">Contact Details</li>
+                                <li class="accordion-item">Deal Creation and Details</li>
+                                <li class="accordion-item">Docusign Integration</li>
+                                <li class="accordion-item">Payment Link</li>
+                            </ul>
+                        </div>
+                    </div>    
+                </div>
+                <div class="question-container" style="margin-top: 20px;">
+                    <h2 class="question">Have you sent the contract and has the customer paid the deposit?</h2>
+                    <div class="button-container">
+                        <button class="choice-button" onclick="showRTOFinalSteps()">Yes</button>
+                        <button class="choice-button">If not yes, complete above steps</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Append after the EZ Pay content
+        const ezPayContent = document.getElementById('ezpay-content');
+        ezPayContent.appendChild(processDiv);
+        addAccordionListeners();
+    }
+
+    function showRTOFinalSteps() {
+        updateState('rtoChoices.completedHubspot', true);
+        // Remove any existing Final Steps content first
+        const existingFinal = document.getElementById('rto-final-steps-content');
+        if (existingFinal) existingFinal.remove();
+        
+        const processDiv = document.createElement('div');
+        processDiv.id = 'rto-final-steps-content';
+        processDiv.innerHTML = `
+            <div class="track rto-track">
+                <div class="track-header" style="background: var(--red);">Final Steps</div>
+                    <div class="track-content">
+                        <div class="step">
+                            <div class="step-title">Final Steps</div>
+                            <ul class="checklist">
+                                <li class="accordion-item">Contract</li>
+                                <li class="accordion-item">EZ Pay Closing Steps</li>
+                                <li class="accordion-item">Order Tool</li>
+                                <li class="accordion-item">Final Steps</li>
+                            </ul>
+                        </div>
+                    </div>    
+                </div>
+                <div class="question-container" style="margin-top: 20px;">
+                    <h2 class="question">Congrats! You did it, deal complete.</h2>
+                </div>
+            </div>
+        `;
+        
+        // Append after the Hubspot content
+        const hubspotContent = document.getElementById('rto-hubspot-content');
+        hubspotContent.appendChild(processDiv);
+        addAccordionListeners();
+    }
+
+    function hideAllContent() {
+        const contents = [
+            'installation-content', 
+            'rto-question', 
+            'rto-response',
+            'payment-estimator-content',
+            'rto-idearoom-content'
+        ];
+        contents.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) element.remove();
+        });
+    }
+
+    </script>
+</body>
+</html>
